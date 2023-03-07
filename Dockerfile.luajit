@@ -1,0 +1,3 @@
+FROM centos:centos7
+WORKDIR /var/www/
+RUN yum install -y valgrind gcc automake autoconf libtool make
