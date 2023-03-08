@@ -1,4 +1,4 @@
-.PHONY: down-luajit
+.PHONY: build
 
-down-luajit:
-	git clone -b v2.1 https://luajit.org/git/luajit.git
+build: 
+	docker build -t xiaofuzi123/luajit-valgrind:v2.1 -f Dockerfile.luajit .
