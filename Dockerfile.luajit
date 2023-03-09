@@ -1,9 +1,9 @@
 FROM centos:centos7
-WORKDIR /var/www/
+WORKDIR /var/src/
+RUN yum install -y git valgrind valgrind-devel gcc automake autoconf libtool make
+COPY ./entrypoint.sh /var/src/
 ARG LUAJIT_VERSION="v2.1"
 ARG LUAJIT_BIN_NAME="2.1.0-beta3"
-RUN yum install -y git valgrind valgrind-devel gcc automake autoconf libtool make
 RUN git clone -b ${LUAJIT_VERSION} https://github.com/LuaJIT/LuaJIT.git
 RUN cd LuaJIT && sed -i -E "s/^#(CCDEBUG= -g|XCFLAGS\+= -DLUAJIT_USE_VALGRIND)/\1/" src/Makefile && make && make install && ln -sf luajit-${LUAJIT_BIN_NAME} /usr/local/bin/luajit
-ENTRYPOINT [ "valgrind" ]
-CMD [ "-h" ]
+ENTRYPOINT [ "/var/src/entrypoint.sh" ]

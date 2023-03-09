@@ -1,5 +1,7 @@
 local ffi = require("ffi")
-local testlib = ffi.load("test")
+local ffi_gc = ffi.gc
+local demo = ffi.load("demo")
+local _M = {}
 ffi.cdef [[
     typedef struct ArrayData{
        int* data;
@@ -10,15 +12,22 @@ ffi.cdef [[
 ]]
 
 local function get_n_array(n)
-  return ffi.gc(testlib.make_n(n), testlib.free_n_array)
+  return ffi_gc(demo.make_n(n), demo.free_n_array)
 end
 
-local function test()
+function _M.test_no_leak()
+  print("run method with ffi.gc")
   local arr = get_n_array(3)
   for i = 1, tonumber(arr.n) do
     print(arr.data[i - 1])
   end
-  print("execute test method")
 end
 
-test()
+function _M.test_leak()
+  local arr = demo.make_n(3)
+  for i = 1, tonumber(arr.n) do
+    print(arr.data[i - 1])
+  end
+end
+
+return _M
